@@ -33,6 +33,12 @@ struct onepole {
                b1{ calculate_b1(theta) }
     {}
 
+    void set_frequency(number value) {
+        theta = calculate_theta(ntwopiosr, value);
+        a0 = calculate_a0(theta);
+        b1 = calculate_b1(theta);
+    }
+
     number operator()(number sample) {
         z1 = a0 * sample - b1 * z1;
 		return z1;
