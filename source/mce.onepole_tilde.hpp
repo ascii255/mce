@@ -36,6 +36,9 @@ struct onepole_tilde : object<onepole_tilde>, sample_operator<1, 1>
     argument<number> gain_argument { this, gain.name(), "Sets the @gain attribute.",
                                      MIN_ARGUMENT_FUNCTION { gain = arg; } };
 
+    message<> reset { this, "reset", description { "Resets the filter." },
+                      MIN_FUNCTION { dspsetup(); return {}; } };
+
     message<> dspsetup { this, "dspsetup", MIN_FUNCTION { setup(); return {}; } };
 
     sample operator()(sample);
