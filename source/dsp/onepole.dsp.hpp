@@ -34,14 +34,15 @@ struct onepole {
     {}
 
     number operator()(number sample) {
-        // put implementation here
-        return sample;
+        z1 = a0 * sample - b1 * z1;
+		return z1;
     }
 
 private:
     number const ntwopiosr;
     number theta;
     number a0, b1;
+    number z1{};
 };
 
 } // namespace dsp
