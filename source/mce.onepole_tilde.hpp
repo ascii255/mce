@@ -25,6 +25,9 @@ struct onepole_tilde : object<onepole_tilde>, sample_operator<1, 1>
     argument<number> frequency_argument { this, frequency.name(), "Sets the @frequency attribute.",
                                           MIN_ARGUMENT_FUNCTION { frequency = arg; } };
 
+    message<> frequency_message { this, "number", description { "Sets the @frequency attribute." },
+                                  MIN_FUNCTION { frequency = args[0]; return {}; } };
+    
     attribute<number, threadsafe::no, limit::clamp>
               gain { this, "gain", 1.0, range { 0.01, 2.0 }, order { 2 }, title { "Gain (factor)" }, 
                      description { "Set the gain factor." }, 
