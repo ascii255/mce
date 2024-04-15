@@ -1,9 +1,24 @@
+#include <memory>
+
 #include "mce.onepole_tilde.hpp"
 
 namespace mce {
 
+void onepole_tilde::set_frequency(number value) {
+    frequency.get() = value;
+    onepole.set_frequency(value);
+}
+
+void onepole_tilde::set_gain(number value) {
+    gain.get() = value;
+    onepole.set_gain(value);
+}
+
 void onepole_tilde::setup() {
-    // put implementation here
+    std::construct_at(&onepole,
+                      samplerate(),
+                      frequency.get(),
+                      gain.get());
 }
 
 sample onepole_tilde::operator()(sample input) {
