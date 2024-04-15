@@ -22,10 +22,16 @@ struct onepole_tilde : object<onepole_tilde>, sample_operator<1, 1>
                           description { "Set the frequency in Hertz." }, 
                           setter { MIN_FUNCTION{ set_frequency(args[0]); return { frequency.get() }; } } };
 
+    argument<number> frequency_argument { this, frequency.name(), "Sets the @frequency attribute.",
+                                          MIN_ARGUMENT_FUNCTION { frequency = arg; } };
+
     attribute<number, threadsafe::no, limit::clamp>
               gain { this, "gain", 1.0, range { 0.01, 2.0 }, order { 2 }, title { "Gain (factor)" }, 
                      description { "Set the gain factor." }, 
                      setter { MIN_FUNCTION{ set_gain(args[0]); return { gain.get() }; } } };
+
+    argument<number> gain_argument { this, gain.name(), "Sets the @gain attribute.",
+                                     MIN_ARGUMENT_FUNCTION { gain = arg; } };
 
     message<> dspsetup { this, "dspsetup", MIN_FUNCTION { setup(); return {}; } };
 
