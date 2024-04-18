@@ -16,8 +16,8 @@ struct onepole {
         return std::exp(ntwopiosr * frequency);
     }
 
-    static number calculate_a0(number theta) {
-        return 1.0 - theta;
+    static number calculate_a0(number theta, number gain) {
+        return (1.0 - theta) * gain;
     }
 
     static number calculate_b1(number theta) {
@@ -25,18 +25,25 @@ struct onepole {
     }
 
     onepole(number samplerate = 44100.0,
-            number  frequency = 1000.0
+            number  frequency = 1000.0,
+            number       gain = 1.0
         ) :
             ntwopiosr{ -(twopi / samplerate) },
             theta{ calculate_theta(ntwopiosr, frequency) },
-               a0{ calculate_a0(theta) },
+             gain{ gain },
+               a0{ calculate_a0(theta, gain) },
                b1{ calculate_b1(theta) }
     {}
 
     void set_frequency(number value) {
         theta = calculate_theta(ntwopiosr, value);
-        a0 = calculate_a0(theta);
+        a0 = calculate_a0(theta, gain);
         b1 = calculate_b1(theta);
+    }
+
+    void set_gain(number value) {
+        a0 = calculate_a0(theta, value);
+        b1 = calculate_b1(theta);    
     }
 
     number operator()(number sample) {
@@ -47,6 +54,7 @@ struct onepole {
 private:
     number const ntwopiosr;
     number theta;
+    number gain;
     number a0, b1;
     number z1{};
 };
