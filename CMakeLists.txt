@@ -1,31 +1,49 @@
-cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.19)
+project(MCE)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/source/cmake ${CMAKE_SOURCE_DIR}/source/cmake/Max/FindModules)
+enable_testing()
 
-include(Max/ParsePackageInfo)
-parse_package_info(${CMAKE_SOURCE_DIR}/package-info.json)
+string(REGEX REPLACE "(.*)/" "" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
 
-project(${PACKAGE_NAME}
-    VERSION ${PACKAGE_VERSION}
-    DESCRIPTION ${PACKAGE_DESCRIPTION}
-    HOMEPAGE_URL ${PACKAGE_WEBSITE}
-    LANGUAGES CXX
-)
+if (APPLE)
+    if (${CMAKE_GENERATOR} MATCHES "Xcode")
+            if (${XCODE_VERSION} VERSION_LESS 10)
+                message(STATUS "Xcode 10 or higher is required. Please install from the Mac App Store.")
+                return ()
+            elseif(${XCODE_VERSION} VERSION_GREATER_EQUAL 12)
+                set(C74_BUILD_FAT YES)
+            endif ()
+    endif ()
 
-find_package(MinAPI REQUIRED)
+    if (NOT CMAKE_OSX_ARCHITECTURES)
+        if(C74_BUILD_FAT)
+            set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "macOS architecture" FORCE)
+        else()
+            set(CMAKE_OSX_ARCHITECTURES ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "macOS architecture" FORCE)
+        endif()
+        message("CMAKE_OSX_ARCHITECTURES set to ${CMAKE_OSX_ARCHITECTURES}")
+    endif()
+endif()
 
-include(Max/AddExternal)
-add_external(onepole mce.onepole~)
-target_compile_features(onepole PRIVATE cxx_std_20)
-target_sources(onepole PRIVATE 
-    ${CMAKE_SOURCE_DIR}/source/dsp/onepole.dsp.hpp
-    ${CMAKE_SOURCE_DIR}/source/mce.onepole_tilde.hpp
-    ${CMAKE_SOURCE_DIR}/source/mce.onepole_tilde.cpp
-)
-target_link_libraries(onepole PRIVATE MinAPI::MinAPI)
 
-set(CMAKE_XCODE_GENERATE_SCHEME TRUE)
-set_target_properties(onepole PROPERTIES
-    XCODE_SCHEME_EXECUTABLE "/Applications/Max.app"
-    XCODE_SCHEME_ARGUMENTS "\"\${PROJECT_DIR}/help/mce.onepole~.maxhelp\""
-)
+# Misc setup and subroutines
+include(${CMAKE_CURRENT_SOURCE_DIR}/source/min-api/script/min-package.cmake)
+
+
+# Add the Lib, if it exists
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/min-lib/CMakeLists.txt")
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/min-lib)
+endif ()
+
+
+# Generate a project for every folder in the "source/projects" folder
+SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/projects)
+foreach (project_dir ${PROJECT_DIRS})
+    if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir}/CMakeLists.txt")
+        message("Generating: ${project_dir}")
+        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir})
+    endif ()
+endforeach ()
+
+# Comment the line below if you want automatic cmake regneration enabled
+set(CMAKE_SUPPRESS_REGENERATION true)
