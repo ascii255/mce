@@ -48,7 +48,7 @@ private:
     void set_gain(number);
     void setup();
 
-    dsp::onepole onepole{};
+    dsp::onepole<> onepole{};
 };
 
 } // namespace mce
