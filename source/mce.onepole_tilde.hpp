@@ -20,7 +20,7 @@ struct onepole_tilde : object<onepole_tilde>, sample_operator<1, 1>
     attribute<number, threadsafe::no, limit::clamp>
               frequency { this, "frequency", 1000.0, range { 20.0, 20000.0 }, order { 1 }, title { "Frequency (Hz)" }, 
                           description { "Set the frequency in Hertz." }, 
-                          setter { MIN_FUNCTION{ set_frequency(args[0]); return { frequency.get() }; } } };
+                          setter { MIN_FUNCTION{ set_frequency(args[0]); return { frequency.get() = args[0] }; } } };
 
     argument<number> frequency_argument { this, frequency.name(), "Sets the @frequency attribute.",
                                           MIN_ARGUMENT_FUNCTION { frequency = arg; } };
@@ -31,7 +31,7 @@ struct onepole_tilde : object<onepole_tilde>, sample_operator<1, 1>
     attribute<number, threadsafe::no, limit::clamp>
               gain { this, "gain", 1.0, range { 0.01, 2.0 }, order { 2 }, title { "Gain (factor)" }, 
                      description { "Set the gain factor." }, 
-                     setter { MIN_FUNCTION{ set_gain(args[0]); return { gain.get() }; } } };
+                     setter { MIN_FUNCTION{ set_gain(args[0]); return { gain.get() = args[0] }; } } };
 
     argument<number> gain_argument { this, gain.name(), "Sets the @gain attribute.",
                                      MIN_ARGUMENT_FUNCTION { gain = arg; } };
@@ -44,8 +44,8 @@ struct onepole_tilde : object<onepole_tilde>, sample_operator<1, 1>
     sample operator()(sample);
 
 private:
-    void set_frequency(number);
-    void set_gain(number);
+    void set_frequency(number const);
+    void set_gain(number const);
     void setup();
 
     dsp::onepole<> onepole{};

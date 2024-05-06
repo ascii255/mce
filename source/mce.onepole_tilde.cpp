@@ -4,13 +4,11 @@
 
 namespace mce {
 
-void onepole_tilde::set_frequency(number value) {
-    frequency.get() = value;
+void onepole_tilde::set_frequency(number const value) {
     onepole.set_frequency(value);
 }
 
-void onepole_tilde::set_gain(number value) {
-    gain.get() = value;
+void onepole_tilde::set_gain(number const value) {
     onepole.set_gain(value);
 }
 
