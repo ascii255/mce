@@ -41,14 +41,14 @@ struct onepole_tilde : object<onepole_tilde>, sample_operator<1, 1>
 
     message<> dspsetup { this, "dspsetup", MIN_FUNCTION { setup(); return {}; } };
 
-    sample operator()(sample);
+    inline sample operator()(sample);
 
 private:
-    void set_frequency(number const);
-    void set_gain(number const);
-    void setup();
+    inline void set_frequency(number);
+    inline void set_gain(number);
+    inline void setup();
 
-    dsp::onepole<> onepole{};
+    dsp::onepole<number> onepole{};
 };
 
 } // namespace mce
