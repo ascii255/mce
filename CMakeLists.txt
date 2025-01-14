@@ -15,13 +15,9 @@ project(${PACKAGE_NAME}
 find_package(MinAPI REQUIRED)
 
 include(Max/AddExternal)
-add_external(onepole mce.onepole~)
+add_external(onepole NAME mce.onepole~)
 target_compile_features(onepole PRIVATE cxx_std_20)
-target_compile_definitions(onepole PRIVATE
-    DSP_NUMBER_TYPE=double
-    DSP_NOEXCEPT=noexcept
-    exspec=DSP_NOEXCEPT
-)
+target_compile_definitions(onepole PRIVATE DSP_NUMBER_TYPE=double)
 target_sources(onepole PRIVATE 
     ${CMAKE_SOURCE_DIR}/source/dsp/onepole.dsp.hpp
     ${CMAKE_SOURCE_DIR}/source/mce.onepole_tilde.hpp
