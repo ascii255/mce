@@ -1,6 +1,0 @@
-[submodule "source/min-api"]
-	path = source/min-api
-	url = https://github.com/Cycling74/min-api.git
-[submodule "source/cmake/Max"]
-	path = source/cmake/Max
-	url = https://github.com/ascii255/max-cmake-modules.git
